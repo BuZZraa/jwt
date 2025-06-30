@@ -28,6 +28,24 @@ app.use(
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+function authenticateToken(req, res, next) {
+  const accessToken = req.cookies.access;
+  if (accessToken == null)
+    return res.status(401).json({
+      message: "Expired",
+    });
+
+  jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err) => {
+    console.log(err);
+    if (err)
+      return res.status(406).json({
+        message: "Expired",
+      });
+    next();
+  });
+}
+
 app.post("/register", async (req, res) => {
   const {
     firstName,
