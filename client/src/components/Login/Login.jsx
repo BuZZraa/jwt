@@ -2,9 +2,12 @@ import { NavLink, useNavigate } from "react-router";
 import Input from "../Form/Input";
 import axios from "axios";
 import Button from "../Form/Button";
+import { useDispatch } from "react-redux";
+import { sessionActions } from "../../state/sessionSlice.js";
 
 export default function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   async function handleLogin(event) {
     event.preventDefault();
@@ -21,6 +24,7 @@ export default function Login() {
 
     if (successData.data.success) {
       navigate("/homepage");
+      dispatch(sessionActions.login());
     }
   }
   return (
