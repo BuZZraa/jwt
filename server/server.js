@@ -11,6 +11,7 @@ import validator from "email-validator";
 import crypto from "crypto";
 import VerificationCodeModel from "./model/VerificationCodeModel.js";
 import sendMail from "./config/nodemailer.js";
+import axios from "axios";
 
 const app = express();
 
@@ -28,7 +29,6 @@ app.use(
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
 function authenticateToken(req, res, next) {
   const accessToken = req.cookies.access;
   if (accessToken == null)
@@ -36,7 +36,7 @@ function authenticateToken(req, res, next) {
       message: "Expired",
     });
 
-  jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err) => {
+  jwt.verify(accessToken, process.env.ACCESS_SECRET, (err) => {
     console.log(err);
     if (err)
       return res.status(406).json({
@@ -110,7 +110,15 @@ app.post("/login", async (req, res) => {
       .status(400)
       .json({ success: false, message: "Please enter a valid email!" });
 
-  const isPasswordCorrect = await bcrypt.compare(password, data.password);
+  const user = await UserDetailsModel.findOne({ email });
+  if (!user) {
+    return res.status(400).json({
+      success: false,
+      message: "Please enter a registered email address!",
+    });
+  }
+
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
   if (!isPasswordCorrect)
     return res
       .status(400)
@@ -121,7 +129,7 @@ app.post("/login", async (req, res) => {
       email: email,
     },
     process.env.ACCESS_SECRET,
-    { expiresIn: "10m" }
+    { expiresIn: "2s" }
   );
 
   const refreshToken = jwt.sign(
@@ -148,9 +156,8 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/refresh", (req, res) => {
+  const refreshToken = req.cookies.refresh;
   if (refreshToken) {
-    const refreshToken = req.cookies.refresh;
-
     jwt.verify(refreshToken, process.env.REFRESH_SECRET, (err, decoded) => {
       if (err) {
         return res.status(406).json({ message: "Unauthorized" });
@@ -158,7 +165,7 @@ app.post("/refresh", (req, res) => {
         const accessToken = jwt.sign({}, process.env.ACCESS_SECRET, {
           expiresIn: "10m",
         });
-        res.cookie(access, accessToken, {
+        res.cookie("access", accessToken, {
           httpOnly: true,
           maxAge: 10 * 60 * 1000,
           secure: true,
@@ -194,11 +201,10 @@ app.post("/forgotPassword", async (req, res) => {
   }
 
   const randomNum = crypto.randomInt(100000, 999999);
-  
+
   const sendVerificationCode = await sendMail(randomNum, email);
-  if(!sendVerificationCode)
-    return;
-  
+  if (!sendVerificationCode) return;
+
   const prevCodeExists = await VerificationCodeModel.findOne({ email });
   if (prevCodeExists) {
     await VerificationCodeModel.updateOne(
@@ -264,4 +270,23 @@ app.post("/changePassword", async (req, res) => {
 
 app.listen(3000, () => {
   console.log("Listening on port 3000!");
+});
+
+app.get("/homepage", authenticateToken, async (req, res) => {
+  const fetchedData = await axios.get(
+    "https://jsonplaceholder.typicode.com/posts?userId=1"
+  );
+
+  if (!fetchedData) {
+    res.status(500).json({
+      success: false,
+      message: "Server issue! Please try again later!",
+    });
+  }
+
+  res.status(201).json({
+    success: true,
+    message: "Data sent successfully!",
+    data: fetchedData.data,
+  });
 });
