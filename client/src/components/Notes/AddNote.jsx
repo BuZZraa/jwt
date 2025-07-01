@@ -1,0 +1,35 @@
+import Input from "../Form/Input";
+import Button from "../Form/Button";
+import axios from "axios";
+import { useSelector } from "react-redux";
+
+export default function AddNote() {
+  const email = useSelector((state) => state.session.user);
+
+  function handleAddNote(event) {
+    event.preventDefault();
+
+    const fd = new FormData(event.target);
+    const formData = Object.fromEntries(fd.entries());
+    formData.email = email;
+
+    const successData = axios.post("http://localhost:3000/addNote", formData, {
+      withCredentials: true,
+    });
+  }
+
+  return (
+    <form className="space-y-4" onSubmit={handleAddNote}>
+      <Input type="text" label="Title" name="title" />
+      <div className="flex flex-col">
+        <label>Description</label>
+
+        <textarea
+          className="resize-none py-1 border-1 pl-1 border-gray-400 rounded-sm"
+          name="description"
+        />
+      </div>
+      <Button>Add Note</Button>
+    </form>
+  );
+}

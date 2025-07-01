@@ -25,6 +25,7 @@ export default function Login() {
     if (successData.data.success) {
       navigate("/homepage");
       dispatch(sessionActions.login());
+      dispatch(sessionActions.setUser(formData.email));
     }
   }
   return (
