@@ -6,8 +6,9 @@ import ForgotPassword from "./components/Login/ForgotPassword";
 import VerifyCode from "./components/Login/VerifyCode";
 import ChangePassword from "./components/Login/ChangePassword";
 import VerififedRoute from "./components/utils/VerififedRoute";
-import Homepage from "./components/Root/Homepage";
+import Homepage from "./components/Notes/Homepage";
 import ProtectedRoute from "./components/utils/ProtectedRoute";
+import EditNote from "./components/Notes/EditNote";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -48,6 +49,14 @@ export default function App() {
           element: (
             <ProtectedRoute>
               <Homepage />,
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "editNote",
+          element: (
+            <ProtectedRoute>
+              <EditNote />
             </ProtectedRoute>
           ),
         },
