@@ -12,6 +12,7 @@ const UserDetailsSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true
   },
   gender: {
     type: String,

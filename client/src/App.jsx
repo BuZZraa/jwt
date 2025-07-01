@@ -6,6 +6,7 @@ import ForgotPassword from "./components/Login/ForgotPassword";
 import VerifyCode from "./components/Login/VerifyCode";
 import ChangePassword from "./components/Login/ChangePassword";
 import VerififedRoute from "./components/utils/VerififedRoute";
+import Homepage from "./components/Root/Homepage";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -40,6 +41,10 @@ export default function App() {
               <ChangePassword />
             </VerififedRoute>
           ),
+        },
+        {
+          path: "homepage",
+          element: <Homepage />,
         },
       ],
     },
