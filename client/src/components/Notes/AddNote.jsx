@@ -3,7 +3,7 @@ import Button from "../Form/Button";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-export default function AddNote() {
+export default function AddNote({onAdd}) {
   const email = useSelector((state) => state.session.user);
 
   function handleAddNote(event) {
@@ -16,6 +16,8 @@ export default function AddNote() {
     const successData = axios.post("http://localhost:3000/addNote", formData, {
       withCredentials: true,
     });
+
+    onAdd();
   }
 
   return (

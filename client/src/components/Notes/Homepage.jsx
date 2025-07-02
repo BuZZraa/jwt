@@ -2,39 +2,37 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import AddNote from "./AddNote";
 import { noteActions } from "../../state/noteSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
 export default function Homepage() {
   const [data, setData] = useState([]);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const email = useSelector((state) => state.session.user);
 
   async function getData() {
-    const getData = await axios.post(
-      "http://localhost:3000/homepage",
-      { email: email },
-      {
-        withCredentials: true,
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/homepage",
+        { email },
+        { withCredentials: true }
+      );
+      setData(res.data.data);
+    } catch (error) {
+      if (error.response?.data?.message === "Expired") {
+        await axios.post(
+          "http://localhost:3000/refresh",
+          {},
+          {
+            withCredentials: true,
+          }
+        );
+      } else {
+        console.error("Failed to fetch notes:", error);
       }
-    );
-
-    return getData;
+    }
   }
 
   useEffect(() => {
-    getData()
-      .then((data) => {
-        setData(data.data.data);
-      })
-      .catch((error) => {
-        if (error.response.data.message === "Expired") {
-          axios.post("http://localhost:3000/refresh", {}, {
-            withCredentials: true,
-          });
-        }
-      });
+    getData();
   }, []);
 
   function handleEditNote(data) {
@@ -43,20 +41,18 @@ export default function Homepage() {
   }
 
   async function handleDelete(noteId) {
-    const successData = await axios.delete(
-      "http://localhost:3000/deleteNote",
-      {
-        data: { email, noteId },
-        withCredentials: true,
-      }
-    );
+    const successData = await axios.delete("http://localhost:3000/deleteNote", {
+      data: { email, noteId },
+      withCredentials: true,
+    });
+    getData();
   }
 
   return (
     <>
       <div className="max-w-lg mx-auto border-1 border-gray-200 my-16 rounded-md p-4 space-y-8 shadow-md bg-gray-50">
         <h2 className="text-4xl font-semibold text-green-800">Add Note</h2>
-        <AddNote />
+        <AddNote onAdd={getData}/>
       </div>
       <div className="max-w-lg mx-auto border-1 border-gray-200 my-16 rounded-md p-4 space-y-8 shadow-md bg-gray-50">
         <h2 className="text-3xl text-green-800">Todo</h2>
