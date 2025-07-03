@@ -1,5 +1,5 @@
-import Input from "../Form/Input";
-import Button from "../Form/Button";
+import Input from "../../components/Form/Input";
+import Button from "../../components/Form/Button";
 import axios from "axios";
 import { useNavigate } from "react-router";
 
@@ -10,12 +10,12 @@ export default function ChangePassword() {
     const fd = new FormData(event.target);
     const formData = Object.fromEntries(fd.entries());
 
-    const passwordChanged =await axios.post(
+    const passwordChanged = await axios.post(
       "http://localhost:3000/changePassword",
       formData
     );
 
-    console.log(passwordChanged)
+    console.log(passwordChanged);
     if (passwordChanged.data.success) {
       localStorage.removeItem("email");
       navigate("/login");

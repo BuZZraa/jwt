@@ -1,23 +1,27 @@
-import Input from "../Form/Input";
-import Button from "../Form/Button";
+import Input from "../../components/Form/Input";
+import Button from "../../components/Form/Button";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import expiredRequest from "../../components/utils/expiredRequest";
 
-export default function AddNote({onAdd}) {
+export default function AddNote({ onAdd }) {
   const email = useSelector((state) => state.session.user);
 
-  function handleAddNote(event) {
+  async function handleAddNote(event) {
     event.preventDefault();
 
     const fd = new FormData(event.target);
     const formData = Object.fromEntries(fd.entries());
     formData.email = email;
 
-    const successData = axios.post("http://localhost:3000/addNote", formData, {
-      withCredentials: true,
-    });
+    async function initialRequest() {
+      await axios.post("http://localhost:3000/addNote", formData, {
+        withCredentials: true,
+      });
+      onAdd();
+    }
 
-    onAdd();
+    expiredRequest(initialRequest);
   }
 
   return (

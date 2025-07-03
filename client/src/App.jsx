@@ -1,14 +1,14 @@
-import RegistrationForm from "./components/Form/RegistrationForm";
+import RegistrationForm from "./pages/Register/RegistrationForm";
 import { RouterProvider, createBrowserRouter } from "react-router";
 import RootLayout from "./components/Root/RootLayout";
-import Login from "./components/Login/Login";
-import ForgotPassword from "./components/Login/ForgotPassword";
-import VerifyCode from "./components/Login/VerifyCode";
-import ChangePassword from "./components/Login/ChangePassword";
+import ForgotPassword from "./pages/Login/ForgotPassword";
+import VerifyCode from "./pages/Login/VerifyCode";
+import ChangePassword from "./pages/Login/ChangePassword";
 import VerififedRoute from "./components/utils/VerififedRoute";
-import Homepage from "./components/Notes/Homepage";
 import ProtectedRoute from "./components/utils/ProtectedRoute";
-import EditNote from "./components/Notes/EditNote";
+import Homepage from "./pages/Notes/Homepage";
+import EditNote from "./pages/Notes/EditNote";
+import Login from "./pages/Login/Login";
 
 export default function App() {
   const router = createBrowserRouter([
