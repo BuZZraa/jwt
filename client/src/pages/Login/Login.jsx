@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router";
-import Input from "../Form/Input";
+import Input from "../../components/Form/Input.jsx";
 import axios from "axios";
-import Button from "../Form/Button";
+import Button from "../../components/Form/Button";
 import { useDispatch } from "react-redux";
 import { sessionActions } from "../../state/sessionSlice.js";
 

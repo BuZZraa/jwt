@@ -1,6 +1,6 @@
-import Input from "./Input";
+import Input from "../../components/Form/Input";
 import axios from "axios";
-import Button from "./Button";
+import Button from "../../components/Form/Button";
 
 export default function RegistrationForm() {
   async function handleRegister(event) {

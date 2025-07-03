@@ -36,7 +36,7 @@ export async function loginUser(req, res) {
       email: email,
     },
     process.env.ACCESS_SECRET,
-    { expiresIn: "2s" }
+    { expiresIn: "10m" }
   );
 
   const refreshToken = jwt.sign(

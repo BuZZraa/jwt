@@ -1,6 +1,6 @@
 import axios from "axios";
-import Button from "../Form/Button";
-import Input from "../Form/Input";
+import Button from "../../components/Form/Button";
+import Input from "../../components/Form/Input";
 import { useNavigate } from "react-router";
 
 export default function VerifyCode() {

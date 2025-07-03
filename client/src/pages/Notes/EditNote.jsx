@@ -1,5 +1,5 @@
-import Input from "../Form/Input";
-import Button from "../Form/Button";
+import Input from "../../components/Form/Input";
+import Button from "../../components/Form/Button";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router";
